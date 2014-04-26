@@ -1,4 +1,0 @@
-AISS
-====
-
-Security Project
