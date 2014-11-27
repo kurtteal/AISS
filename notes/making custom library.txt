@@ -1,0 +1,34 @@
+Making a custom library:
+
+1. copied the header jni_md.h from '/home/kurt/jdk1.6.0_27/include/linux/jni_md.h' to the level above: 
+'/home/kurt/jdk1.6.0_27/include/jni_md.h'
+
+2. (gcc -fPIC -c aiss_blackbox_BlackBoxUtil.c caesar_cypher.c -I $JAVA_HOME/include)
+gcc -fPIC -c aiss_blackbox_BlackBoxUtil.c protocol.c -I $JAVA_HOME/include 
+//aiss_blackbox_BlackBoxUtil file encapsulates C to java function
+//protocol file has some abides by a pre specified interface (for a cipher blackbox interaction) but 
+	//instead of communicating with this blackbox it does a simple XOR with 1's
+
+3. (gcc aiss_blackbox_BlackBoxUtil.o -shared -o libblackboxutil.so -Wl,-soname,blackboxutil)
+gcc aiss_blackbox_BlackBoxUtil.o protocol.o -shared -o libblackboxutil.so -Wl,-soname,blackboxutil
+
+//Quick test in Linux
+javac aiss/blackbox/Test.java
+
+export LD_LIBRARY_PATH=.
+java aiss.blackbox.Test (having the .so in the same directory where the command is made, ofc)
+
+More in:
+http://jonisalonen.com/2012/calling-c-from-java-is-easy/
+
+
+NOTES:
+Using memcpy in the C code:
+- If running the C code alone, has no problems;
+- If running the C code from the java call, it results in segmentation fault...
+
+Running from eclipse proj on Linux:
+kurt@kurtlap:~/workspace/SecureRepo/build$ java -Djava.library.path=/usr/local/lib/pteid_jni:/home/kurt/workspace/SecureRepo/libs -jar SecureRepo.jar  
+
+
+

@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="Authenticator" basedir="." default="compile">
+<project name="SecureRepo" basedir="." default="run-Mac">
 
 	<property file="${basedir}/build.properties" />
 
-	<property name="authenticator-class" value="aiss.Server" />
-	<property name="requester-class" value="aiss.Client" />
-	<property name="authenticator-jar-name" value="server" />
-	<property name="requester-jar-name" value="client" />
+	<property name="app-class" value="aiss.blackbox.SecureRepo" />
+	<property name="app-jar-name" value="SecureRepo" />
 
 	<property name="src.dir" value="${basedir}/src"/>
 	<property name="build.dir" value="${basedir}/build"/>
-	<property name="lib.dir" value="${basedir}/lib"/>
+	<property name="lib.dir" value="${basedir}/libs"/>
 	<property name="build.classes" value="${build.dir}/classes"/>
 
 	<property name="build.encoding" value="UTF-8"/>
@@ -55,20 +53,11 @@
 		</copy>
 	</target>
 
-	<target name="jar-authenticator" depends="compile" description="Make jar">
+	<target name="jar-app" depends="compile" description="Make jar">
 		<property name="jar.properties.list" value="log4j.properties, slf4.properties"/>
-		<jar jarfile="${build.dir}/${authenticator-jar-name}.jar" basedir="${build.classes}">
+		<jar jarfile="${build.dir}/${app-jar-name}.jar" basedir="${build.classes}">
 			<manifest>
-				<attribute name="Main-Class" value="${authenticator-class}"/>
-			</manifest>
-		</jar>
-	</target>
-
-	<target name="jar-requester" depends="compile" description="Make jar">
-		<property name="jar.properties.list" value="log4j.properties, slf4.properties"/>
-		<jar jarfile="${build.dir}/${requester-jar-name}.jar" basedir="${build.classes}">
-			<manifest>
-				<attribute name="Main-Class" value="${requester-class}"/>
+				<attribute name="Main-Class" value="${app-class}"/>
 			</manifest>
 		</jar>
 	</target>
@@ -77,16 +66,16 @@
 		<delete dir="${build.classes}" includeEmptyDirs="true" followSymlinks="false" />
 	</target>
 
-	<target name="server" depends="jar-authenticator">
-		<java jar="${build.dir}/${authenticator-jar-name}.jar" fork="true">
-			<sysproperty key="java.library.path" path="/usr/local/lib/pteid_jni/"/>
+	<target name="run-Mac" depends="jar-app">
+		<java jar="${build.dir}/${app-jar-name}.jar" fork="true">
+			<sysproperty key="java.library.path" path="/Library/Java/Extensions:${lib.dir}"/>
+		</java>
+	</target>
+	
+	<target name="run-Linux" depends="jar-app">
+		<java jar="${build.dir}/${app-jar-name}.jar" fork="true">
+			<sysproperty key="java.library.path" path="/usr/local/lib/pteid_jni:${lib.dir}"/>
 		</java>
 	</target>
 
-	<target name="client" depends="jar-requester">
-		<java jar="${build.dir}/${requester-jar-name}.jar" fork="true">
-			<sysproperty key="java.library.path" path="/usr/local/lib/pteid_jni/"/>
-			<arg line="${java-args-p2}"/>
-		</java>
-	</target>
 </project>
