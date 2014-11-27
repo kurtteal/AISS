@@ -2,7 +2,7 @@ SecureRepo project
 ====
 (reading from citizen's id smartcard; JNI C-Java; digital signatures)
 
-Implementing a file repository that provides confidentiality and authenticity guarantees to valid
+Implemented a file repository that provides confidentiality and authenticity guarantees to valid
 users. The access to the repository is assumed free, but only users with a cypher blackbox may obtain
 valid data. With no access control it is possible to corrupt the contents, but it was out of scope
 of this work. 
